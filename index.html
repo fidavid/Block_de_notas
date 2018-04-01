@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Bloc de notas</title>
+		<link rel="stylesheet" href="css/estilos.css">
+		<script src="jquery.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<h1>Aplicacion Tarea</h1>
+		</div>
+
+		<div class="agregar_tarea">
+			<h2>Agregar Tarea:</h2>
+			<input type="text" placeholder="Ingrese su tarea" id="texto">
+			<button id="tarea">>></button>
+		</div>
+
+		<div class="tareas1">
+			<h2>Tareas:</h2>
+			<div class="tareas">
+				
+			</div>
+		</div>
+
+		<div class="botones">
+			<button id="uno1" class="uno1">Importar JSON</button>
+			<button id="uno1" class="uno2">Exportar JSON</button>
+			<button id="dos">Guardar notas</button>
+			<button id="tres">Eliminar tareas</button>
+		</div>
+
+		<script>
+			function agregarTarea (fecha_completa, tarea) {
+				var html_tarea = '<div class="tarea" style="display: none;">'+
+									'<div class="uno">'+
+										'<h4>'+fecha_completa+'</h4>'+
+										'<p>'+tarea+'</p>'+
+									'</div>'+
+									'<div class="select">'+
+										'<button class="boton_tarea">X</button>'+
+									'</div>'+
+								'</div>';
+				$(".tareas").prepend(html_tarea);
+			}
+
+			function expJSON () {
+				var tarea2 = [];
+
+				$(".tarea").each(function(){
+					var fecha = $(this).find("h4").text();
+					var texto = $(this).find("p").text();
+					tarea2.push({"fecha":fecha,"texto":texto});
+				})
+
+				return JSON.stringify(tarea2);
+			}
+
+			$("#tarea").click(function(){
+				var tarea = $("#texto").val();
+				var fecha = new Date();
+				var fecha_completa = fecha.getDate() + '/' + (fecha.getMonth()+1) + '/' + fecha.getFullYear() + ' ' + fecha.getHours() + ':' + fecha.getMinutes();
+				
+				if (tarea != "") {
+					agregarTarea(fecha_completa, tarea);
+					$(".tarea:first").show(500);
+				} else {
+					alert("El texto no tiene que estar vacio.");
+				}
+
+				$("#texto").val("");
+				setEliminarBtn();
+			});
+
+			$('#texto').keyup(function(e){
+				if(e.keyCode==13){
+					$('#tarea').trigger('click')
+					//console.log(e.keyCode)
+				}
+			});
+
+			function setEliminarBtn () {
+				$(".boton_tarea").click(function(){
+					$(this).parent(".select").parent(".tarea").hide(500, function(){
+						$(this).remove()
+					});
+				});
+			}
+
+			$('#tres').click(function(){
+				$('.boton_tarea').trigger('click')
+			});
+
+
+
+			$("#dos").click(function(){
+				localStorage.tareas = expJSON();	// es el mejor y mas comodo
+			});
+
+			var tareas_Guardadas = JSON.parse(localStorage.tareas);
+			for (var i = 0; i < tareas_Guardadas.length; i++) {
+				agregarTarea(tareas_Guardadas[i].fecha, tareas_Guardadas[i].texto);
+				$(".tarea:first").show(500);
+				setEliminarBtn();
+			}
+
+			$(".uno2").click(function(){
+				alert(expJSON());
+			});
+
+			$('.uno1').click(function(){
+				localStorage.tarea = prompt("Ingrese su tarea como JSON");
+
+				var tareas_Guardadas = JSON.parse(localStorage.tarea);
+				for (var i = 0; i < tareas_Guardadas.length; i++) {
+					agregarTarea(tareas_Guardadas[i].fecha, tareas_Guardadas[i].texto);
+					$(".tarea:first").show(500);
+					setEliminarBtn();
+				}
+			})
+		</script>
+	</body>
+</html>
