@@ -133,3 +133,28 @@ h2 {
 	background: #4343c1;
 	border: 2px solid blue;
 }
+
+@media screen and (max-width: 768px) {
+	body {
+		background: url(fondo.jpg);
+		background-size: 100% 100%;
+		background-attachment: fixed;
+	}
+
+	.header {
+		width: 89%;
+	}
+
+	.agregar_tarea input {
+		width: 80%;
+	}
+
+	.agregar_tarea button {
+		width: 9%;
+		margin-left: 3%;
+	}
+
+	.uno {
+		width: 85%;
+	}
+}
